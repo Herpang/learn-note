@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>继承测试</title>
+</head>
+<body>
+	<div>
+		<button id="tr">点击测试</button>
+	</div>
+<script>
+//先定义一个类（构造函数）
+function Animal(name){
+	this.name = name || 'Animal';
+	this.sleep = function (){
+		console.log(this.name+'正在睡觉');
+	}
+}
+//在原型上添加方法
+Animal.prototype.eat = function(food){
+	console.log(this.name+'正在吃'+food);
+}
+
+//下面进行第一种继承方式的实现  原型链继承，将子类的原型指向父类的实例。
+function Cat(){};
+Cat.prototype = new Animal();
+Cat.prototype.name = 'cat';
+//下面测试一下这种方法
+var t = new Cat(); 
+console.log(t.name);
+console.log(t.eat('fish'));
+console.log(t.sleep());
+//总结下，这种实现就是将Cat的原型指向Animal的一个实例，自然就能访问到Animal的所有方法
+//但是有一些缺点，
+//缺点一：原型对象的属性是所有子类共享的，父类的引用类型成员发生更改，所有的子类都会改，
+//比如说，原型对象上有个数组，有个子类向数组里面增加了一个值，
+//那么所以子类的这个对象上都会增加一个值。
+//缺点二：在创建子类时不能向构造函数传递参数
+
+//下面进行第二种继承方式的实现  用call（）或者apply（）改变this的指向。
+//其实就是用父类的构造函数来增强子类的实例，等于复制父类的属性给子类
+function Dog(name){
+	Animal.call(this);//用call改变this指向
+	this.name = name || 'Tom';
+}
+//测试一下
+var dog = new Dog();
+console.log(dog.name);
+console.log(dog.sleep());
+//console.log(dog.eat('fish'));
+//总结一下，这种方式其实是一种偷鸡的方式实现继承，并没有用到原型链，只是改变了this的指向，
+//这样做，就只能继承父类的实例方法，就是在父类的构造函数中写出来的方法
+//单独写在原型链上的方法是继承不到的。但是这种方式的优点是可以在一个子类里面实现多个父类的继承。
+
+//下面进行第三种方式的继承，在子类的构造函数里面，用父类的实例，作为返回值
+//很聪明的一个方法。
+function Pig (name){
+	var piger = new Animal();
+	piger.name = name ||'rose';
+	return piger;
+}
+var pig = new Pig();
+console.log(pig.name);
+console.log(pig.sleep());
+console.log(pig.eat('fish'));
+//总结一下，可能我比较菜，我觉的这个方法还可以，只是不支持多继承。
+
+//下面进行第四种方式的继承，拷贝继承。
+//拷贝继承其实就是将父类原型里面的属性一个一个拷贝下来给子类原型，很消耗内存，不是太喜欢这个方法。
+function Ele (name){
+	var animal = new Animal();
+	for(var p in animal){
+		Ele.prototype[p] = animal[p];
+	}
+	Ele.prototype.name = name ||'elephant';
+}
+var ele = new Ele();
+console.log(ele.name);
+console.log(ele.sleep());
+console.log(ele.eat('fish'));
+//总结一下，这个方法感觉很蠢，但是还是可以用的
+//内存占用比较高，因为要拷贝父类的属性，
+//for循环里面读不到的属性，子类就继承不了了
+
+//下面进行第五种方式的继承，组合集成， 这种方式强烈推荐！！！！！
+//将call()改变this指向，和原型链继承相组合
+function Comb (name){
+	Animal.call(this);  //改变父类的构造方法的this指向
+	this.name = name ||'combination';
+}
+Comb.prototype = new Animal(); //进行原型继承
+var comb = new Comb();
+console.log(comb.name);
+console.log(comb.sleep());
+console.log(comb.eat('fish'));
+//总结，既继承了父类的实例方法，又继承了父类的原型方法
+//既是父类的实例，也是子类的实例
+//唯一一点小瑕疵就是调用了两次父类的构造函数，生成了两个函数，占用了一点点内存
+
+//第六种，寄生组合继承  这种实现比较复杂，是用一个空的中间函数,
+//我现在还是想用上面的组合继承，
+function Las (name){
+	Animal.call(this);
+	this.name = name || 'last';
+}
+(function (){
+	var Super = function un (){};
+		Super.prototype = Animal.prototype;
+		Las.prototype = new Super();
+	
+})();
+var las = new Las();
+console.log(las.name);
+console.log(las.sleep());
+console.log(las.eat('fish'));
+
+//总结，寄生组合继承我理解的不是很好，
+//建议用组合继承，性能还可以，实现方便。
+
+
+
+//
+//
+//
+</script>
+</body>
+</html>
