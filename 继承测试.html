@@ -117,26 +117,25 @@ console.log(las.eat('fish'));
 //总结，寄生组合继承我理解的不是很好，
 //建议用组合继承，性能还可以，实现方便。
 
-var arr = [1,2,12,12,3,4,4,5,5,14,6,8,8,8,8,9,11,12,6,6,6,12,14,1,18,5,5,18,19,4,4,56];
-
-function sort (arr){
-    var rearr = [],
-        rt = [],      
-        rt = arr.slice(0);
-    for(var a = 0;a<arr.length;a++){
-    	//console.log(rt.length);
-    	var cct = rt[0];
-        for(var i = 0;i<rt.length;i++){
-            if(rt[0]>rt[i]){
-                cct = rt[i];
-                console.log(cct);
-            }
-        }
-        rearr.push(cct);
-        var index = rt.indexOf(cct);//找到位置 
-        rt.splice(index,1);//删除
+var arr = [3,6,7,2,6,4,1,6,8,24,12,53];
+function sort(arr){
+    //先写递归完成的条件
+    if(arr.length<=1){
+        return arr;
     }
-    return rearr;
+    var middle = Math.floor(arr.length/2);
+        middl = arr.splice(middle,1),
+        left = [],
+        right = [];
+    for(var i = 0;i<arr.length;i++){
+        if(arr[i]>middl){
+            right.push(arr[i]);
+        }
+        if(arr[i]<=middl){
+            left.push(arr[i]);
+        }
+    }
+    return sort(left).concat(middl,sort(right));
 }
 console.log(sort(arr));
 
