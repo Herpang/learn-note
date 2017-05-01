@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>123</title>
+</head>
+<body>
+	<div id="test">测试</div>
+<script>
+var test = (function(){
+	var a = 1,
+		b = 2;
+		sum = function(){
+			console.log(a+b);
+		};
+	return {
+		sum:sum
+	};
+
+}
+)();
+var test = (function(mod){
+	mod.summ = function(){
+		console.log(5);
+	}
+	return mod;
+})(test);
+document.getElementById('test').onclick = function(){
+	test.sum(); //3
+	test.summ(); //5
+}
+</script>
+</body>
+</html>
